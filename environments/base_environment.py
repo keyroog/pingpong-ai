@@ -11,15 +11,12 @@ class BasePongEnv(gym.Env):
     """
     def __init__(self, paddle_height=0.2, render_mode=False):
         super(BasePongEnv, self).__init__()
-        # Parametri del campo
         self.field_width = 1.0
         self.field_height = 1.0
         self.paddle_height = paddle_height
         self.ball_radius = 0.02
-
-        self.min_speed = 0.03
-        self.max_speed = 0.04
-        self.angle_limit = 0.7 
+        self.angle_limit = 0.7
+        self.min_speed = 0.04
 
         # Azioni
         self.action_list = [0, 0.04, -0.04]
@@ -75,49 +72,25 @@ class BasePongEnv(gym.Env):
 
         # Collision with top and bottom walls
         if self.ball_y <= 0 or self.ball_y >= self.field_height:
-            self.velocity_y = self._reflect_velocity(self.velocity_y, axis='vertical')
-
-        # Enforce minimum speed
-        self._enforce_min_speed()
+            self.velocity_y *= -1  # Reflect vertical velocity
 
     def _handle_paddle_collision(self, paddle_y):
         """
         Handles the collision between the ball and a paddle.
         """
-        self.velocity_x = self._reflect_velocity(self.velocity_x, axis='horizontal')
+        self.velocity_x = -self.velocity_x
 
-        # Compute impact factor and adjust velocity
         paddle_center = paddle_y + self.paddle_height / 2
         impact_factor = (self.ball_y - paddle_center) / (self.paddle_height / 2)
         impact_factor = np.clip(impact_factor, -1, 1)
 
         self.velocity_y += impact_factor * 0.02
-        self.velocity_x += random.uniform(-0.002, 0.002)
 
-        # Enforce angle and speed limits
+        # Increment speed slightly with every hit
+        speed_increase = 0.01
+        self.velocity_x *= (1 + speed_increase)
+        self.velocity_y *= (1 + speed_increase)
         self._clamp_angle()
-        self._enforce_min_speed()
-
-    def _reflect_velocity(self, velocity, random_adjustment=0.003, axis='horizontal'):
-        """
-        Reflects velocity and ensures it adheres to the speed limits.
-        
-        :param velocity: The velocity to reflect (either horizontal or vertical).
-        :param random_adjustment: Small randomness added to the velocity after reflection.
-        :param axis: 'horizontal' for x-axis reflection, 'vertical' for y-axis reflection.
-        :return: Adjusted velocity.
-        """
-        velocity *= -1  # Reverse the direction of the velocity
-        velocity += random.uniform(-random_adjustment, random_adjustment)
-
-        # Ensure the ball's position stays within bounds
-        if axis == 'horizontal':
-            self.ball_x = max(0, min(self.field_width, self.ball_x))
-        elif axis == 'vertical':
-            self.ball_y = max(0, min(self.field_height, self.ball_y))
-
-        # Clamp the velocity within the allowed limits
-        return np.clip(velocity, -self.max_speed, self.max_speed)
 
     def _enforce_min_speed(self):
         """
@@ -127,15 +100,6 @@ class BasePongEnv(gym.Env):
         if speed < self.min_speed:
             scale = self.min_speed / speed
             self.velocity_x *= scale
-            self.velocity_y *= scale
-
-    def _clamp_angle(self):
-        """
-        Prevents the ball from becoming too oblique by clamping the angle.
-        """
-        ratio = abs(self.velocity_y / self.velocity_x)
-        if ratio > self.angle_limit:
-            scale = self.angle_limit / ratio
             self.velocity_y *= scale
 
     def _clamp_paddle_positions(self):
@@ -165,10 +129,16 @@ class BasePongEnv(gym.Env):
         continuous_state = self._get_continuous_state()
         return self.discretizer.discretize(continuous_state)
 
+    def _clamp_angle(self):
+        """
+        Prevents the ball from becoming too oblique by clamping the angle.
+        """
+        ratio = abs(self.velocity_y / self.velocity_x)
+        if ratio > self.angle_limit:
+            scale = self.angle_limit / ratio
+            self.velocity_y *= scale
+
     def render(self):
-        """
-        Renderizza l'ambiente usando il Visualizer.
-        """
         if self.render_mode and self.visualizer:
             self.visualizer.render(
                 ball_pos=(self.ball_x, self.ball_y),
@@ -177,8 +147,5 @@ class BasePongEnv(gym.Env):
             )
 
     def close(self):
-        """
-        Chiude il visualizzatore, se esistente.
-        """
         if self.render_mode and self.visualizer:
             self.visualizer.close()
