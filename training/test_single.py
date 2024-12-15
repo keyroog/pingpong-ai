@@ -1,4 +1,3 @@
-from utils.plotter import plot_rewards
 
 def test_agent(env, agent, episodes, plot_path=None, render=False):
     """

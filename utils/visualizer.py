@@ -56,14 +56,13 @@ class Visualizer:
         pygame.draw.rect(self.window, (255, 255, 255), left_paddle_rect)
 
         # Disegna la racchetta destra
-        if multiplayer:
-          right_paddle_rect = pygame.Rect(
-              self.width - self.paddle_width,
-              int(right_paddle_y * self.height),
-              self.paddle_width,
-              self.paddle_height,
-          )
-          pygame.draw.rect(self.window, (255, 255, 255), right_paddle_rect)
+        right_paddle_rect = pygame.Rect(
+            self.width - self.paddle_width,
+            int(right_paddle_y * self.height),
+            self.paddle_width,
+            self.paddle_height,
+        )
+        pygame.draw.rect(self.window, (255, 255, 255), right_paddle_rect)
 
         # Aggiorna il display
         pygame.display.flip()
