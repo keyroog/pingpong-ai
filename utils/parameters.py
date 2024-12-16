@@ -16,9 +16,7 @@ Q_Parameters = {
     "alpha_end": 0.05,
     "gamma": 0.99,
     "epsilon_decay": 100000,
-    "alpha_decay": 0.999,
-    "steps_done": 0,
-    "partitions": _GRID_PARTITIONS,
+    "alpha_decay": 0.999
 }
 
 # SARSA parameters
@@ -29,9 +27,7 @@ SARSA_Parameters = {
     "alpha_end": 0.05,        # Minimum learning rate
     "gamma": 0.99,            # Discount factor for future rewards
     "epsilon_decay": 10000,   # Decay rate for epsilon
-    "alpha_decay": 0.999,     # Decay rate for learning rate
-    "steps_done": 0,          # Counter for steps taken
-    "partitions": _GRID_PARTITIONS,  # Number of partitions for discretization
+    "alpha_decay": 0.999     # Decay rate for learning rate  # Number of partitions for discretization
 }
 
 # Reward values for Pong

@@ -1,36 +1,40 @@
 import random
 import math
 from collections import defaultdict
+import pickle
 
 
 class BaseAgent:
-    """
-    Base class for RL agents.
-    """
-    def __init__(self, actions, epsilon_start=1.0, epsilon_end=0.1, epsilon_decay=200,
-                 alpha=0.1, alpha_end=0.01, alpha_decay=0.99, gamma=0.99):
+    def __init__(self, actions, **kwargs):
         """
+        Initialize the base agent with dynamic parameters.
         :param actions: List of available actions.
-        :param epsilon_start: Initial epsilon for exploration.
-        :param epsilon_end: Minimum epsilon.
-        :param epsilon_decay: Decay rate for epsilon.
-        :param alpha: Initial learning rate.
-        :param alpha_end: Minimum learning rate.
-        :param alpha_decay: Decay factor for learning rate.
-        :param gamma: Discount factor for future rewards.
+        :param kwargs: Dynamic parameters such as epsilon, alpha, etc.
         """
         self.actions = actions
-        self.epsilon_start = epsilon_start
-        self.epsilon_end = epsilon_end
-        self.epsilon_decay = epsilon_decay
-        self.alpha = alpha
-        self.alpha_end = alpha_end
-        self.alpha_decay = alpha_decay
-        self.gamma = gamma
+
+        # Default values
+        self.epsilon_start = kwargs.get("epsilon_start", 1.0)
+        self.epsilon_end = kwargs.get("epsilon_end", 0.1)
+        self.epsilon_decay = kwargs.get("epsilon_decay", 200)
+        self.alpha = kwargs.get("alpha", 0.1)
+        self.alpha_end = kwargs.get("alpha_end", 0.01)
+        self.alpha_decay = kwargs.get("alpha_decay", 0.99)
+        self.gamma = kwargs.get("gamma", 0.99)
 
         self.steps_done = 0
         self.visit_count = defaultdict(int)  # Visit count for Q-learning
         self.q_table = defaultdict(float)  # Default Q-table
+
+    def update_parameters(self, **kwargs):
+        """
+        Update agent parameters dynamically.
+        :param kwargs: Parameters to update (e.g., epsilon, alpha, etc.).
+        """
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
 
     def get_action(self, state):
         """
@@ -71,3 +75,35 @@ class BaseAgent:
         Decays the learning rate over time.
         """
         self.alpha = max(self.alpha_end, self.alpha * self.alpha_decay)
+
+    def save(self, filepath):
+        """
+        Save the Q-table and agent parameters to a file.
+        :param filepath: Path to the file where the Q-table will be saved.
+        """
+        data = {
+            "q_table": dict(self.q_table),  # Convert defaultdict to regular dict
+            "parameters": {
+                "epsilon_start": self.epsilon_start,
+                "epsilon_end": self.epsilon_end,
+                "epsilon_decay": self.epsilon_decay,
+                "alpha": self.alpha,
+                "alpha_end": self.alpha_end,
+                "alpha_decay": self.alpha_decay,
+                "gamma": self.gamma,
+            },
+        }
+        with open(filepath, "wb") as f:
+            pickle.dump(data, f)
+
+    def load(self, filepath):
+        """
+        Load the Q-table and agent parameters from a file.
+        :param filepath: Path to the file where the Q-table is stored.
+        """
+        with open(filepath, "rb") as f:
+            data = pickle.load(f)
+        self.q_table = defaultdict(float, data["q_table"])
+        for key, value in data["parameters"].items():
+            if hasattr(self, key):
+                setattr(self, key, value)

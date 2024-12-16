@@ -1,22 +1,15 @@
 from agents.base_agent import BaseAgent
 from utils.parameters import Q_Parameters, _ACTIONS
 
-
 class QLearningAgent(BaseAgent):
-    """
-    Q-Learning implementation with visit count-based learning rate adjustment.
-    """
-    def __init__(self):
-        super().__init__(
-            actions=_ACTIONS,
-            epsilon_start=Q_Parameters["epsilon_start"],
-            epsilon_end=Q_Parameters["epsilon_end"],
-            epsilon_decay=Q_Parameters["epsilon_decay"],
-            alpha=Q_Parameters["alpha"],
-            alpha_end=Q_Parameters["alpha_end"],
-            alpha_decay=Q_Parameters["alpha_decay"],
-            gamma=Q_Parameters["gamma"],
-        )
+    def __init__(self, **kwargs):
+        """
+        Initialize the Q-Learning agent with default or provided parameters.
+        :param kwargs: Parameters to override defaults from Q_Parameters.
+        """
+        params = Q_Parameters.copy()  # Use defaults
+        params.update(kwargs)  # Override with dynamic parameters
+        super().__init__(actions=_ACTIONS, **params)
 
     def observe(self, state, action, reward, next_state):
         """

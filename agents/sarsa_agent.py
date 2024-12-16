@@ -5,17 +5,14 @@ class SARSAAgent(BaseAgent):
     """
     SARSA implementation with visit count-based learning rate adjustment.
     """
-    def __init__(self):
-        super().__init__(
-            actions=_ACTIONS,
-            epsilon_start=SARSA_Parameters["epsilon_start"],
-            epsilon_end=SARSA_Parameters["epsilon_end"],
-            epsilon_decay=SARSA_Parameters["epsilon_decay"],
-            alpha=SARSA_Parameters["alpha"],
-            alpha_end=SARSA_Parameters["alpha_end"],
-            alpha_decay=SARSA_Parameters["alpha_decay"],
-            gamma=SARSA_Parameters["gamma"],
-        )
+    def __init__(self, **kwargs):
+        """
+        Initialize the SARSA agent with default or provided parameters.
+        :param kwargs: Parameters to override defaults from SARSA_Parameters.
+        """
+        params = SARSA_Parameters.copy()  # Use default parameters
+        params.update(kwargs)  # Override defaults with provided arguments
+        super().__init__(actions=_ACTIONS, **params)
 
     def observe(self, state, action, reward, next_state):
         """
@@ -31,6 +28,7 @@ class SARSAAgent(BaseAgent):
 
         # Choose the next action using epsilon-greedy policy
         next_action = self.get_action(next_state)
+
         # Compute the SARSA update
         old_q = self.q_table[(state, action)]
         next_q = self.q_table[(next_state, next_action)]
