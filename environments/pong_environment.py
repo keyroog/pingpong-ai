@@ -49,8 +49,8 @@ class MultiplayerPongEnv(gym.Env):
         self.ball_y = self.field_height / 2
 
         # Randomize ball's initial velocity
-        self.velocity_x = random.choice([0.02, -0.03])
-        self.velocity_y = random.uniform(-0.03, 0.02)
+        self.velocity_x = random.choice([0.03, -0.03])
+        self.velocity_y = random.uniform(-0.02, 0.02)
 
         self.left_paddle_y = (self.field_height - self.paddle_height) / 2
         self.right_paddle_y = (self.field_height - self.paddle_height) / 2
@@ -183,6 +183,9 @@ class MultiplayerPongEnv(gym.Env):
         impact_factor = np.clip(impact_factor, -1, 1)
 
         self.velocity_y += impact_factor * 0.005
+
+        speed_increase = 1.02
+        self.velocity_x *= speed_increase
 
     def _clamp_paddle_positions(self):
         """

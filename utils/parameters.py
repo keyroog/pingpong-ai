@@ -7,27 +7,36 @@ _ACTIONS = [_STAY, _MOVE_UP, _MOVE_DOWN]
 # Grid partitions for state discretization
 _GRID_PARTITIONS = 12  # Number of bins for discretization
 
-#train episodes: 25000 - test episodes: 100
+#train episodes: 100 - test episodes: 100
 # Parametri per il Q
+# Q_Parameters = {
+#     "epsilon_start": 0.9,     # Mantieni esplorazione iniziale alta
+#     "epsilon_end": 0.05,      # Mantieni minima esplorazione finale
+#     "alpha": 0.25,            # Learning rate iniziale
+#     "alpha_end": 0.05,        # Learning rate finale
+#     "gamma": 0.99,            # Discount factor
+#     "epsilon_decay": 150000,  # Esplorazione diminuisce più lentamente
+#     "alpha_decay": 0.999      # Decadimento learning rate
+# }
+# SARSA parameters
+SARSA_Parameters = {
+    "epsilon_start": 0.9,     # Mantieni esplorazione iniziale alta
+    "epsilon_end": 0.05,      # Mantieni minima esplorazione finale
+    "alpha": 0.25,            # Learning rate iniziale
+    "alpha_end": 0.05,        # Learning rate finale
+    "gamma": 0.99,            # Discount factor
+    "epsilon_decay": 150000,  # Esplorazione diminuisce più lentamente
+    "alpha_decay": 0.999      # Decadimento learning rate
+}
+
 Q_Parameters = {
     "epsilon_start": 0.9,
     "epsilon_end": 0.05,
-    "alpha": 0.25,
+    "alpha": 0.2,             # Learning rate leggermente più basso
     "alpha_end": 0.05,
     "gamma": 0.99,
-    "epsilon_decay": 100000,
-    "alpha_decay": 0.999
-}
-
-# SARSA parameters
-SARSA_Parameters = {
-    "epsilon_start": 0.9,     # Initial epsilon for exploration
-    "epsilon_end": 0.05,      # Minimum epsilon
-    "alpha": 0.25,            # Learning rate
-    "alpha_end": 0.05,        # Minimum learning rate
-    "gamma": 0.99,            # Discount factor for future rewards
-    "epsilon_decay": 10000,   # Decay rate for epsilon
-    "alpha_decay": 0.999     # Decay rate for learning rate  # Number of partitions for discretization
+    "epsilon_decay": 300000,  # Esplorazione dura più a lungo
+    "alpha_decay": 0.9995     # Decadimento più lento
 }
 
 # Reward values for Pong

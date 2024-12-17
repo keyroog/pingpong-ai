@@ -4,6 +4,7 @@ from agents.sarsa_agent import SARSAAgent
 from environments.pong_environment import MultiplayerPongEnv
 from training.train_double import train_double_agent
 from utils.parameters import Q_Parameters, SARSA_Parameters
+from utils.plotter import plot_metrics
 
 def train_and_save_models(left_agent_type="qlearning", right_agent_type="sarsa", episodes=5000):
     # Ensure models directory exists
@@ -22,9 +23,18 @@ def train_and_save_models(left_agent_type="qlearning", right_agent_type="sarsa",
         env, left_agent, right_agent, episodes=episodes, log_interval=500
     )
 
+    plot_metrics(
+        metrics_dict={"Left Rewards": left_rewards, "Right Rewards": right_rewards},
+        rolling_window=100,
+        title="Training Rewards",
+        xlabel="Episodes",
+        ylabel="Rewards",
+        save_path=f"results/{left_agent_type}_vs_{right_agent_type}_training_rewards_{episodes}.png",
+    )
+
     # Save the trained models
-    left_model_path = f"models/{left_agent_type}_models/{left_agent_type}_left_100k.pkl"
-    right_model_path = f"models/{right_agent_type}_models/{right_agent_type}_right_100k.pkl"
+    left_model_path = f"models/{left_agent_type}_models/{left_agent_type}_{episodes}k_left.pkl"
+    right_model_path = f"models/{right_agent_type}_models/{right_agent_type}_{episodes}k_right.pkl"
     left_agent.save(left_model_path)
     right_agent.save(right_model_path)
 
@@ -33,4 +43,4 @@ def train_and_save_models(left_agent_type="qlearning", right_agent_type="sarsa",
     # Close environment
     env.close()
 
-train_and_save_models(left_agent_type="qlearning", right_agent_type="sarsa", episodes=100000)
+train_and_save_models(left_agent_type="qlearning", right_agent_type="qlearning", episodes=250000)
