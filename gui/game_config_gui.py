@@ -27,32 +27,40 @@ def launch_game_config_gui():
 
 
     def update_fields():
-        """Show or hide fields based on user choices and resize the window dynamically."""
+        """Mostra o nasconde i campi in base alle scelte dell'utente e ridimensiona dinamicamente la finestra."""
         mode = mode_var.get()
         train_new = train_var.get()
 
-        # Show/hide agent frames
+        # Mostra/nascondi i frame degli agenti
         if mode == "agent_vs_agent":
             left_agent_frame.pack(fill=X, pady=5)
             right_agent_frame.pack(fill=X, pady=5)
             player_frame.pack_forget()
+
+            # Abilita la checkbox per addestrare nuovi agenti
+            train_checkbox.config(state=NORMAL)
+
+            # Mostra o nasconde il frame "Numero di Episodi" in base allo stato della checkbox
+            if train_new:
+                episodes_frame.pack(fill=X, pady=5)
+            else:
+                episodes_frame.pack_forget()
         elif mode == "agent_vs_player":
             left_agent_frame.pack(fill=X, pady=5)
             right_agent_frame.pack_forget()
             player_frame.pack(fill=X, pady=5)
 
-        # Show or hide the episodes field
-        if train_new:
-            episodes_frame.pack(fill=X, pady=5)  # Show episodes field
-        else:
-            episodes_frame.pack_forget()  # Hide episodes field
+            # Disabilita la checkbox per addestrare nuovi agenti e nasconde il frame
+            train_var.set(False)  # Deseleziona la checkbox
+            train_checkbox.config(state=DISABLED)
+            episodes_frame.pack_forget()  # Nascondi il frame "Numero di Episodi"
 
-        # Update agent configuration based on training option
-        update_agent_config(left_agent_type, left_agent_config_frame, train_new, "left")
+        # Aggiorna la configurazione degli agenti in base all'opzione di training
+        update_agent_config(left_agent_type, left_agent_config_frame, train_var.get(), "left")
         if mode == "agent_vs_agent":
-            update_agent_config(right_agent_type, right_agent_config_frame, train_new, "right")
+            update_agent_config(right_agent_type, right_agent_config_frame, train_var.get(), "right")
 
-        # Dynamically resize the window
+        # Ridimensiona dinamicamente la finestra
         root.update_idletasks()
         root.geometry(f"{root.winfo_reqwidth()}x{root.winfo_reqheight()}")
 
@@ -167,10 +175,11 @@ def launch_game_config_gui():
     ttk.Radiobutton(mode_frame, text="Agent vs Agent", variable=mode_var, value="agent_vs_agent", command=update_fields).pack(anchor="w")
     ttk.Radiobutton(mode_frame, text="Agent vs Player", variable=mode_var, value="agent_vs_player", command=update_fields).pack(anchor="w")
 
-    # Training options
+    # Opzioni di training
     train_frame = ttk.Labelframe(root, text="Opzioni", padding=10)
     train_frame.pack(fill=X, padx=10, pady=10)
-    ttk.Checkbutton(train_frame, text="Addestra nuovi agenti", variable=train_var, command=update_fields).pack(anchor="w")
+    train_checkbox = ttk.Checkbutton(train_frame, text="Addestra nuovi agenti", variable=train_var, command=update_fields)
+    train_checkbox.pack(anchor="w")
 
     # Episodes configuration (top of agent frame)
     episodes_frame = ttk.Frame(root, padding=10)

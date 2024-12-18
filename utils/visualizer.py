@@ -32,7 +32,6 @@ class Visualizer:
         :param right_paddle_y: Posizione della racchetta destra (margine superiore) in coordinate normalizzate.
         """
         if self.window is None:
-            pygame.init()
             self.window = pygame.display.set_mode((self.width, self.height))
             pygame.display.set_caption("Pong Environment")
             self.clock = pygame.time.Clock()

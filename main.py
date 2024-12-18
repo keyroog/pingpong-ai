@@ -4,11 +4,15 @@ from environments.pong_environment import MultiplayerPongEnv
 from training.train_double import train_double_agent
 from training.test_double import test_double_agent
 from utils.plotter import plot_metrics
+import pygame
 
 def start_main(config):
     # Initialize environment
+    pygame.init()  # Inizializza Pygame una sola volta
     env = MultiplayerPongEnv()
-    env.render_mode = True
+    user_mode = config["mode"] == "agent_vs_player"  # True if user is playing against agent
+    print(f"config: {config}")
+    print(f"User Mode: {user_mode}")
 
     # Initialize left agent
     if config["train_new"]:
@@ -29,6 +33,10 @@ def start_main(config):
 
     if config["train_new"]:
         # Train agents
+        #if agent_vs_player is selected the right agent is the clone of the left agent for the training
+        if config["mode"] == "agent_vs_player":
+            right_agent = QLearningAgent(**config["left_agent_params"]) if config["left_agent_type"] == "qlearning" else SARSAAgent(**config["left_agent_params"])
+
         left_rewards, right_rewards = train_double_agent(
             env,
             left_agent,
@@ -36,18 +44,21 @@ def start_main(config):
             episodes=config["episodes"],
             log_interval=1000,
             plot_path="results/training_rewards.png",
+            user_mode=user_mode,
         )
 
         # Save Q-tables after training
-        left_model_path = f"models/{config['left_agent_type']}/{config['left_agent_type']}_left_trained.pkl"
+        left_model_path = f"models/{config['left_agent_type']}_models/{config['left_agent_type']}_{config["episodes"]}_left.pkl"
         left_agent.save(left_model_path)
 
         if right_agent:
-            right_model_path = f"models/{config['right_agent_type']}/{config['right_agent_type']}_right_trained.pkl"
+            right_model_path = f"models/{config['right_agent_type']}_models/{config['right_agent_type']}_{config["episodes"]}_right.pkl"
             right_agent.save(right_model_path)
 
         print(f"Models saved:\n  Left Agent: {left_model_path}\n  Right Agent: {right_model_path if right_agent else 'None'}")
 
+
+        save_path = f"results/{config['left_agent_type']}_vs_{config['right_agent_type']}_training_rewards_{config['episodes']}.png"
         # Plot training results
         plot_metrics(
             metrics_dict={"Left Rewards": left_rewards, "Right Rewards": right_rewards},
@@ -55,7 +66,7 @@ def start_main(config):
             title="Training Rewards",
             xlabel="Episodes",
             ylabel="Rewards",
-            save_path="results/double_agent_training_rewards.png",
+            save_path=save_path,
         )
 
         test_double_agent(
@@ -66,6 +77,7 @@ def start_main(config):
             render=True,
             log_interval=10,
             plot_path="results/testing_rewards.png",
+            user_mode=config["mode"] == "user_vs_agent",
         )
     else:
         # Test agents with pre-trained models
@@ -77,6 +89,7 @@ def start_main(config):
             render=True,
             log_interval=10,
             plot_path="results/testing_rewards.png",
+            user_mode=user_mode,
         )
 
         # Plot testing results
@@ -91,6 +104,8 @@ def start_main(config):
 
     # Close environment
     env.close()
+    # Close Pygame
+    pygame.quit()
 
 
 

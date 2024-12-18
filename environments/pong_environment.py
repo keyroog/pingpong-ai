@@ -5,16 +5,17 @@ from gym import spaces
 import numpy as np
 import random
 from utils.parameters import REWARD_Values
+import pygame
 
 class MultiplayerPongEnv(gym.Env):
     """
     Multiplayer Pong environment for training two agents simultaneously.
     """
-    def __init__(self, paddle_height=0.2, render_mode=False):
+    def __init__(self):
         super(MultiplayerPongEnv, self).__init__()
         self.field_width = 1.0
         self.field_height = 1.0
-        self.paddle_height = paddle_height
+        self.paddle_height = 0.2
         self.ball_radius = 0.02
         self.angle_limit = 0.7
         self.min_speed = 0.04
@@ -34,8 +35,6 @@ class MultiplayerPongEnv(gym.Env):
         )
         self.action_space = spaces.Discrete(3)
 
-        # Visualization
-        self.render_mode = render_mode
         self.visualizer = Visualizer()
 
         # Initial state
@@ -101,7 +100,7 @@ class MultiplayerPongEnv(gym.Env):
         """
         Renders the environment.
         """
-        if self.render_mode and self.visualizer:
+        if self.visualizer:
             self.visualizer.render(
                 ball_pos=(self.ball_x, self.ball_y),
                 left_paddle_y=self.left_paddle_y,
@@ -112,7 +111,7 @@ class MultiplayerPongEnv(gym.Env):
         """
         Closes the visualizer, if any.
         """
-        if self.render_mode and self.visualizer:
+        if self.visualizer:
             self.visualizer.close()
 
     def _get_ai_action(self):
@@ -206,6 +205,16 @@ class MultiplayerPongEnv(gym.Env):
             self.left_paddle_y,
             self.right_paddle_y,
         ], dtype=np.float32)
+
+    def _get_user_action(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_UP]:
+            return 2  # Muovi verso l'alto
+        elif keys[pygame.K_DOWN]:
+            return 1  # Muovi verso il basso
+        else:
+            return 0  # Nessun movimento
 
     def _get_discretized_state(self):
         """

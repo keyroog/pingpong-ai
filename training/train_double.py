@@ -1,5 +1,5 @@
 
-def train_double_agent(env, agent_left, agent_right, episodes, log_interval=100, plot_path=None):
+def train_double_agent(env, agent_left, agent_right, episodes, log_interval=100, plot_path=None,user_mode=False):
     """
     Train two agents simultaneously in the environment.
 
@@ -23,7 +23,11 @@ def train_double_agent(env, agent_left, agent_right, episodes, log_interval=100,
         while not done:
             # Choose actions for both agents
             left_action = agent_left.get_action(state)
-            right_action = agent_right.get_action(state)
+
+            if(not user_mode):
+                right_action = agent_right.get_action(state)
+            else:
+                right_action = env._get_user_action()
 
             # Take actions in the environment
             next_state, (left_reward, right_reward), done, _ = env.step((left_action, right_action))

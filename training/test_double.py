@@ -1,4 +1,4 @@
-def test_double_agent(env, agent_left, agent_right, episodes, render=False, log_interval=10, plot_path=None):
+def test_double_agent(env, agent_left, agent_right, episodes, render=False, log_interval=10, plot_path=None, user_mode=False):
     """
     Test two agents in a multiplayer environment.
 
@@ -23,7 +23,10 @@ def test_double_agent(env, agent_left, agent_right, episodes, render=False, log_
         while not done:
             # Agents choose their actions (exploitation only)
             left_action = agent_left.get_best_action(state)
-            right_action = agent_right.get_best_action(state)
+            if(not user_mode):
+                right_action = agent_right.get_best_action(state)
+            else:
+                right_action = env._get_user_action()
 
             # Step the environment with both actions
             next_state, (left_reward, right_reward), done, _ = env.step((left_action, right_action))

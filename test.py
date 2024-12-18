@@ -43,4 +43,4 @@ def train_and_save_models(left_agent_type="qlearning", right_agent_type="sarsa",
     # Close environment
     env.close()
 
-train_and_save_models(left_agent_type="qlearning", right_agent_type="qlearning", episodes=250000)
+train_and_save_models(left_agent_type="sarsa", right_agent_type="sarsa", episodes=500000)
