@@ -2,7 +2,7 @@
 
 Interfaccia                |  Gameplay
 :-------------------------:|:-------------------------:
-![](https://interfaccia.png)  |  ![](https://game.gif)
+![](images/interfaccia.png)  |  ![](images/game.gif)
 
 ## 📖 Overview
 
