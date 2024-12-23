@@ -1,8 +1,9 @@
 # Ping-Pong AI: Reinforcement Learning for Multiplayer Pong
 
-![Interfaccia Grafica](images/interfaccia.png)
-
-![Gameplay](images/game.gif)
+<div style="display: flex; justify-content: space-between;">
+  <img src="images/interfaccia.png" alt="Gameplay Image" style="width: 48%;">
+  <img src="images/game.gif" alt="Gameplay Animation" style="width: 48%;">
+</div>
 
 ## 📖 Overview
 
