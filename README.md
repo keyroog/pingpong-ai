@@ -1,8 +1,8 @@
 # Ping-Pong AI: Reinforcement Learning for Multiplayer Pong
 
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-  <img src="images/interfaccia.png" alt="Gameplay Image" style="width: 48%;">
-  <img src="images/game.gif" alt="Gameplay Animation" style="width: 48%;">
+  <img src="images/interfaccia.png" alt="Gameplay Image" style="width: 45%;">
+  <img src="images/game.gif" alt="Gameplay Animation" style="width: 45%;">
 </div>
 
 ## 📖 Overview
