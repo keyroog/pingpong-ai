@@ -1,6 +1,8 @@
 # Ping-Pong AI: Reinforcement Learning for Multiplayer Pong
 
-![Training Rewards](images/qlearning_vs_sarsa_training_rewards_500000.png)
+![Interfaccia Grafica](images/interfaccia.png)
+
+![Gameplay](images/game.gif)
 
 ## 📖 Overview
 
