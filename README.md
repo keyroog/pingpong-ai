@@ -63,13 +63,13 @@ Ping-Pong-AI/
 
 Assicurati di avere installato:
 - Python 3.8 o superiore
-- Librerie necessarie: `gym`, `pygame`, `numpy`, `matplotlib`
+- Librerie necessarie: `gym`, `pygame`, `numpy`, `matplotlib`, `tkinter`, `ttkbootstrap`
 
 ### Installazione
 
 1. Clona il repository:
    ```bash
-   git clone https://github.com/<tuo_username>/pingpong-ai.git
+   git clone https://github.com/keyroog/pingpong-ai.git
    cd pingpong-ai
    ```
 
@@ -94,9 +94,9 @@ Il comando lancia un'interfaccia grafica che consente all'utente di personalizza
 ## 📊 Results
 
 ### Q-Learning vs SARSA
-I seguenti grafici mostrano il confronto tra Q-Learning e SARSA durante l'addestramento:
+Il seguente grafico mostra il confronto tra Q-Learning e SARSA durante l'addestramento:
 
-![Q-Learning vs SARSA](images/qlearning_vs_sarsa_training_rewards_500000.png)
+![Q-Learning vs SARSA](results/qlearning_vs_sarsa_training_rewards_500000.png)
 
 - **Q-Learning**:
   - Convergenza più rapida.
